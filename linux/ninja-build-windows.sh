@@ -154,25 +154,29 @@ cmake -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$OV_INSTALL" \
   -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" \
-  -DENABLE_PLUGINS_XML=ON \
-  -DENABLE_PYTHON=OFF \
-  -DENABLE_SAMPLES=OFF \
-  -DENABLE_SYSTEM_TBB=OFF \
   -DENABLE_TESTS=OFF \
-  -DENABLE_FUNCTIONAL_TESTS=OFF \
+  -DENABLE_SAMPLES=ON \
+  -DENABLE_PYTHON=OFF \
+  -DENABLE_STRICT_DEPENDENCIES=OFF \
+  -DCMAKE_DISABLE_FIND_PACKAGE_PkgConfig=ON \
+  -DENABLE_SYSTEM_TBB=OFF \
+  -DENABLE_SYSTEM_PROTOBUF=OFF \
+  -DENABLE_SYSTEM_PUGIXML=OFF \
+  -DENABLE_SYSTEM_SNAPPY=OFF \
+  -DENABLE_INTEL_CPU=ON \
   -DENABLE_INTEL_GPU=OFF \
   -DENABLE_INTEL_NPU=OFF \
-  -DENABLE_AUTO=OFF \
-  -DENABLE_HETERO=OFF \
-  -DENABLE_MULTI=OFF \
-  -DENABLE_AUTO_BATCH=OFF \
-  -DENABLE_TEMPLATE=OFF \
+  -DENABLE_AUTO=ON \
+  -DENABLE_HETERO=ON \
+  -DENABLE_MULTI=ON \
+  -DENABLE_AUTO_BATCH=ON \
+  -DENABLE_TEMPLATE=ON \
   -DENABLE_OV_ONNX_FRONTEND=ON \
-  -DENABLE_OV_PADDLE_FRONTEND=OFF \
-  -DENABLE_OV_PYTORCH_FRONTEND=OFF \
-  -DENABLE_OV_TF_FRONTEND=OFF \
-  -DENABLE_OV_TF_LITE_FRONTEND=OFF \
-  -DENABLE_STRICT_DEPENDENCIES=OFF \
+  -DENABLE_OV_PADDLE_FRONTEND=ON \
+  -DENABLE_OV_PYTORCH_FRONTEND=ON \
+  -DENABLE_OV_TF_FRONTEND=ON \
+  -DENABLE_OV_TF_LITE_FRONTEND=ON \
+  -DENABLE_OV_IR_FRONTEND=ON \
   ..
 
 cmake --build . --target install --parallel "$PARALLEL_JOBS"
@@ -220,9 +224,16 @@ echo "Install path: $OV_INSTALL"
 echo "ZIP archive:  $ZIP_PATH"
 echo "============================================================"
 echo ""
-echo "NOTE: Built with MinGW-w64 toolchain"
-echo "To test on Linux, you can use Wine:"
-echo "  wine $OV_INSTALL/bin/hello_query_device.exe"
+echo "Built with MinGW-w64 for Windows (CPU-only)"
+echo ""
+echo "Enabled features:"
+echo "  - CPU inference engine"
+echo "  - All frontends (ONNX, TensorFlow, PyTorch, Paddle, TF Lite, IR)"
+echo "  - Auto/Hetero/Multi/AutoBatch plugins"
+echo "  - Samples and tools"
+echo ""
+echo "Note: GPU/NPU plugins and Python bindings disabled for cross-compilation"
+echo "For full native builds, use windows/ninja-build.bat on Windows"
 echo ""
 
 exit 0

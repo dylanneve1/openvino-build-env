@@ -116,23 +116,47 @@ echo "PARALLEL_JOBS = $PARALLEL_JOBS"
 echo "TOOLCHAIN     = MinGW-w64 (x86_64-w64-mingw32)"
 echo "============================================================"
 
+# Create MinGW-w64 toolchain file
+TOOLCHAIN_FILE="$OV_BUILD/mingw64-toolchain.cmake"
+mkdir -p "$OV_BUILD"
+
+cat > "$TOOLCHAIN_FILE" << 'EOF'
+set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
+
+# Cross-compiler
+set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
+set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+
+# Target environment
+set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
+
+# Adjust the default behavior of the FIND_XXX() commands:
+# search programs in the host environment
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
+# Search headers and libraries in the target environment
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+EOF
+
+echo "Created toolchain file: $TOOLCHAIN_FILE"
 echo ""
+
 echo "============================================================"
 echo "1) Configure + build OpenVINO for Windows..."
 echo "============================================================"
 
-mkdir -p "$OV_BUILD"
 cd "$OV_BUILD"
 
 cmake -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$OV_INSTALL" \
-  -DCMAKE_TOOLCHAIN_FILE="$OV_SRC/cmake/toolchains/mingw64.toolchain.cmake" \
-  -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
-  -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
-  -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres \
-  -DCMAKE_SYSTEM_NAME=Windows \
+  -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" \
   -DENABLE_PLUGINS_XML=ON \
+  -DENABLE_PYTHON=OFF \
+  -DENABLE_SAMPLES=OFF \
   ..
 
 cmake --build . --target install --parallel "$PARALLEL_JOBS"
@@ -148,11 +172,7 @@ cd "$GENAI_BUILD"
 cmake -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$OV_INSTALL" \
-  -DCMAKE_TOOLCHAIN_FILE="$OV_SRC/cmake/toolchains/mingw64.toolchain.cmake" \
-  -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
-  -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
-  -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres \
-  -DCMAKE_SYSTEM_NAME=Windows \
+  -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" \
   -DOpenVINODeveloperPackage_DIR="$OV_DEVPKG_DIR" \
   ..
 

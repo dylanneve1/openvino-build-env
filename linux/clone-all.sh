@@ -4,8 +4,9 @@
 # Clone both OpenVINO and OpenVINO GenAI repositories
 # ============================================================
 
-# Get script directory
+# Get parent directory (this script is in linux subfolder)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo ""
 echo "=========================================="
@@ -37,14 +38,5 @@ echo ""
 echo "=========================================="
 echo "  All repositories cloned successfully  ✓"
 echo "=========================================="
-echo ""
-echo "Next step: Install OpenVINO-specific dependencies"
-echo ""
-echo "Run:"
-echo "  cd openvino"
-echo "  sudo ./install_build_dependencies.sh"
-echo "  touch .deps_installed"
-echo "  cd .."
-echo ""
 
 exit 0

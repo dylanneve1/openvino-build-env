@@ -5,7 +5,7 @@ REM ============================================================
 REM Clone both OpenVINO and OpenVINO GenAI repositories
 REM ============================================================
 
-REM Get parent directory (this script is in scripts subfolder)
+REM Get parent directory (this script is in windows subfolder)
 set "ROOT=%~dp0.."
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 

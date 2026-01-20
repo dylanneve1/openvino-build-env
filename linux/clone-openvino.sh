@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # ============================================================
-# Clone OpenVINO GenAI repository
+# Clone OpenVINO repository
 # ============================================================
 
-# Get parent directory (this script is in scripts subfolder)
+# Get parent directory (this script is in linux subfolder)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-REPO_URL="https://github.com/openvinotoolkit/openvino.genai.git"
-REPO_DIR="$ROOT/openvino.genai"
+REPO_URL="https://github.com/openvinotoolkit/openvino.git"
+REPO_DIR="$ROOT/openvino"
 
 if [ -d "$REPO_DIR" ]; then
     echo ""
     echo "=========================================="
-    echo "  OpenVINO GenAI already exists at:"
+    echo "  OpenVINO already exists at:"
     echo "  $REPO_DIR"
     echo "=========================================="
     echo ""
@@ -29,7 +29,7 @@ fi
 
 echo ""
 echo "=========================================="
-echo "  Cloning OpenVINO GenAI..."
+echo "  Cloning OpenVINO..."
 echo "=========================================="
 echo "  URL: $REPO_URL"
 echo "  Dir: $REPO_DIR"
@@ -48,7 +48,7 @@ fi
 
 echo ""
 echo "=========================================="
-echo "  OpenVINO GenAI cloned successfully  ✓"
+echo "  OpenVINO cloned successfully  ✓"
 echo "=========================================="
 
 exit 0

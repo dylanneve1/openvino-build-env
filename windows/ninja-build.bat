@@ -4,10 +4,10 @@ setlocal EnableExtensions EnableDelayedExpansion
 
 REM ============================================================
 REM Build OpenVINO + OpenVINO.GenAI (Ninja) and package ZIP
-REM Assumes this script is in scripts\ subfolder with:
+REM Assumes this script is in windows\ subfolder with:
 REM   ..\openvino\
 REM   ..\openvino.genai\
-REM   .\ninja-pack.ps1 (sibling in scripts folder)
+REM   .\ninja-pack.ps1 (sibling in windows folder)
 REM Optional:
 REM   ..\build-env\Scripts\activate.bat  (python venv)
 REM
@@ -26,7 +26,7 @@ for %%A in (%*) do (
   if /I "%%~A"=="/?"     goto :USAGE
 )
 
-REM --- Root directory (parent of scripts folder) ---
+REM --- Root directory (parent of windows folder) ---
 set "ROOT=%~dp0.."
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
@@ -224,7 +224,7 @@ echo ninja-build.bat - Build OpenVINO + OpenVINO.GenAI + package zip
 echo ============================================================
 echo.
 echo Location assumptions:
-echo   - This script is in scripts\\ subfolder with parent containing:
+echo   - This script is in windows\\ subfolder with parent containing:
 echo       ..\\openvino\\
 echo       ..\\openvino.genai\\
 echo   - Sibling packaging script:

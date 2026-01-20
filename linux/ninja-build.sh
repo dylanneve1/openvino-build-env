@@ -2,7 +2,7 @@
 
 # ============================================================
 # Build OpenVINO + OpenVINO.GenAI (Ninja) and package
-# Assumes this script is in scripts/ subfolder with:
+# Assumes this script is in linux/ subfolder with:
 #   ../openvino/
 #   ../openvino.genai/
 # Usage:
@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# --- Root directory (parent of scripts folder) ---
+# --- Root directory (parent of linux folder) ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 

@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # ============================================================
-# Setup build environment for Linux
-# Installs all required dependencies for building OpenVINO
+# Complete automated setup for OpenVINO build environment
+# - Installs all required dependencies
+# - Clones OpenVINO and OpenVINO GenAI repositories
+# - Installs OpenVINO-specific dependencies
 # ============================================================
 
 set -e
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo ""
 echo "=========================================="
@@ -37,7 +43,7 @@ echo ""
 case $DISTRO in
     ubuntu|debian)
         echo "=========================================="
-        echo "  Installing build dependencies..."
+        echo "  Step 1/4: Installing build dependencies"
         echo "=========================================="
         sudo apt-get update
         sudo apt-get install -y \
@@ -59,7 +65,7 @@ case $DISTRO in
     
     fedora|rhel|centos|rocky|almalinux)
         echo "=========================================="
-        echo "  Installing build dependencies..."
+        echo "  Step 1/4: Installing build dependencies"
         echo "=========================================="
         sudo dnf install -y \
             gcc \
@@ -79,7 +85,7 @@ case $DISTRO in
     
     opensuse*|sles)
         echo "=========================================="
-        echo "  Installing build dependencies..."
+        echo "  Step 1/4: Installing build dependencies"
         echo "=========================================="
         sudo zypper install -y \
             gcc \
@@ -99,7 +105,7 @@ case $DISTRO in
     
     arch|manjaro)
         echo "=========================================="
-        echo "  Installing build dependencies..."
+        echo "  Step 1/4: Installing build dependencies"
         echo "=========================================="
         sudo pacman -Sy --noconfirm \
             base-devel \
@@ -116,25 +122,19 @@ case $DISTRO in
         ;;
     
     *)
-        echo "WARNING: Unsupported distribution: $DISTRO"
-        echo "Please install manually:"
-        echo "  - build-essential / gcc/g++"
-        echo "  - cmake (3.13+)"
-        echo "  - ninja-build"
-        echo "  - git"
-        echo "  - python3 (3.9-3.12)"
-        echo "  - python3-pip"
-        echo "  - ccache (optional)"
+        echo "ERROR: Unsupported distribution: $DISTRO"
+        echo "Supported distributions:"
+        echo "  - Ubuntu/Debian"
+        echo "  - Fedora/RHEL/CentOS/Rocky/AlmaLinux"
+        echo "  - openSUSE/SLES"
+        echo "  - Arch/Manjaro"
         exit 1
         ;;
 esac
 
 # Verify installations
 echo ""
-echo "=========================================="
-echo "  Verifying installations..."
-echo "=========================================="
-
+echo "Verifying installations..."
 command -v cmake >/dev/null 2>&1 && echo "✓ cmake: $(cmake --version | head -n1)" || echo "✗ cmake not found"
 command -v ninja >/dev/null 2>&1 && echo "✓ ninja: $(ninja --version)" || echo "✗ ninja not found"
 command -v git >/dev/null 2>&1 && echo "✓ git: $(git --version)" || echo "✗ git not found"
@@ -143,16 +143,53 @@ command -v g++ >/dev/null 2>&1 && echo "✓ g++: $(g++ --version | head -n1)" ||
 command -v python3 >/dev/null 2>&1 && echo "✓ python3: $(python3 --version)" || echo "✗ python3 not found"
 command -v ccache >/dev/null 2>&1 && echo "✓ ccache: $(ccache --version | head -n1)" || echo "  ccache not found (optional)"
 
+# Clone repositories
 echo ""
 echo "=========================================="
-echo "  Setup complete!"
+echo "  Step 2/4: Cloning repositories"
 echo "=========================================="
 echo ""
-echo "Next steps:"
-echo "  1. Clone repositories:  ./scripts/clone-all.sh"
-echo "  2. Install OpenVINO-specific deps (after cloning):"
-echo "     cd openvino && sudo ./install_build_dependencies.sh && cd .."
-echo "  3. Build:  ./scripts/ninja-build.sh"
+
+cd "$ROOT"
+
+if [ -d "openvino" ] && [ -d "openvino.genai" ]; then
+    echo "Repositories already exist, skipping clone..."
+else
+    "$SCRIPT_DIR/clone-all.sh"
+fi
+
+# Install OpenVINO-specific dependencies
+echo ""
+echo "=========================================="
+echo "  Step 3/4: Installing OpenVINO dependencies"
+echo "=========================================="
+echo ""
+
+if [ -f "$ROOT/openvino/.deps_installed" ]; then
+    echo "OpenVINO dependencies already installed, skipping..."
+else
+    cd "$ROOT/openvino"
+    if [ -f "./install_build_dependencies.sh" ]; then
+        echo "Running OpenVINO dependency installer..."
+        sudo ./install_build_dependencies.sh
+        touch .deps_installed
+        echo "✓ OpenVINO dependencies installed"
+    else
+        echo "WARNING: install_build_dependencies.sh not found"
+        echo "You may need to install additional dependencies manually"
+    fi
+    cd "$ROOT"
+fi
+
+echo ""
+echo "=========================================="
+echo "  Step 4/4: Setup complete!"
+echo "=========================================="
+echo ""
+echo "Your system is ready to build OpenVINO!"
+echo ""
+echo "Next step:"
+echo "  ./linux/ninja-build.sh"
 echo ""
 
 exit 0

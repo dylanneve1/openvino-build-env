@@ -2,20 +2,20 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 REM ============================================================
-REM Clone OpenVINO repository
+REM Clone OpenVINO GenAI repository
 REM ============================================================
 
-REM Get parent directory (this script is in scripts subfolder)
+REM Get parent directory (this script is in windows subfolder)
 set "ROOT=%~dp0.."
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
-set "REPO_URL=https://github.com/openvinotoolkit/openvino.git"
-set "REPO_DIR=%ROOT%\openvino"
+set "REPO_URL=https://github.com/openvinotoolkit/openvino.genai.git"
+set "REPO_DIR=%ROOT%\openvino.genai"
 
 if exist "%REPO_DIR%\" (
     echo.
     echo ==========================================
-    echo   OpenVINO already exists at:
+    echo   OpenVINO GenAI already exists at:
     echo   %REPO_DIR%
     echo ==========================================
     echo.
@@ -29,7 +29,7 @@ if exist "%REPO_DIR%\" (
 
 echo.
 echo ==========================================
-echo   Cloning OpenVINO...
+echo   Cloning OpenVINO GenAI...
 echo ==========================================
 echo   URL: %REPO_URL%
 echo   Dir: %REPO_DIR%
@@ -48,7 +48,7 @@ if %errorlevel% neq 0 (
 
 echo.
 echo ==========================================
-echo   OpenVINO cloned successfully  ✓
+echo   OpenVINO GenAI cloned successfully  ✓
 echo ==========================================
 
 :END

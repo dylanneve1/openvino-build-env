@@ -4,12 +4,12 @@ setlocal EnableExtensions EnableDelayedExpansion
 
 REM ============================================================
 REM Build OpenVINO + OpenVINO.GenAI (Ninja) and package ZIP
-REM Assumes this .bat lives in a folder containing:
-REM   .\openvino\
-REM   .\openvino.genai\
-REM   .\ninja-pack.ps1
+REM Assumes this script is in scripts\ subfolder with:
+REM   ..\openvino\
+REM   ..\openvino.genai\
+REM   .\ninja-pack.ps1 (sibling in scripts folder)
 REM Optional:
-REM   .\build-env\Scripts\activate.bat  (python venv)
+REM   ..\build-env\Scripts\activate.bat  (python venv)
 REM
 REM Usage:
 REM   ninja-build.bat -Help
@@ -26,8 +26,8 @@ for %%A in (%*) do (
   if /I "%%~A"=="/?"     goto :USAGE
 )
 
-REM --- Root directory where this script lives ---
-set "ROOT=%~dp0"
+REM --- Root directory (parent of scripts folder) ---
+set "ROOT=%~dp0.."
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
 REM --- Repo locations ---
@@ -70,9 +70,9 @@ if not exist "%GENAI_SRC%\CMakeLists.txt" (
   exit /b 1
 )
 
-if not exist "%ROOT%\ninja-pack.ps1" (
+if not exist "%~dp0ninja-pack.ps1" (
   echo ERROR: Packaging script not found:
-  echo   %ROOT%\ninja-pack.ps1
+  echo   %~dp0ninja-pack.ps1
   exit /b 1
 )
 
@@ -152,12 +152,12 @@ popd
 
 echo.
 echo ============================================================
-echo 5^) Packaging (ZIP) using .\ninja-pack.ps1...
+echo 5^) Packaging (ZIP) using ninja-pack.ps1...
 echo ============================================================
 
-REM Call ninja-pack.ps1 from ROOT (it will locate openvino\ itself)
+REM Call ninja-pack.ps1 from scripts folder
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass ^
-  -File "%ROOT%\ninja-pack.ps1" ^
+  -File "%~dp0ninja-pack.ps1" ^
   -BuildPath "%OV_INSTALL%" ^
   -OutDir "%OV_BUILD%" ^
   %* || exit /b 1
@@ -224,12 +224,13 @@ echo ninja-build.bat - Build OpenVINO + OpenVINO.GenAI + package zip
 echo ============================================================
 echo.
 echo Location assumptions:
-echo   - This script is in a folder containing:
-echo       .\openvino\
-echo       .\openvino.genai\
-echo       .\ninja-pack.ps1
+echo   - This script is in scripts\\ subfolder with parent containing:
+echo       ..\\openvino\\
+echo       ..\\openvino.genai\\
+echo   - Sibling packaging script:
+echo       .\\ninja-pack.ps1
 echo   - Optional python venv:
-echo       .\build-env\Scripts\activate.bat
+echo       ..\\build-env\\Scripts\\activate.bat
 echo.
 echo Usage:
 echo   ninja-build.bat -Help

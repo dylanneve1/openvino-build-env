@@ -1,6 +1,15 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+REM --- Root directory (parent of scripts folder) ---
+set "ROOT=%~dp0.."
+if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
+
+pushd "%ROOT%" || (
+  echo ERROR: Failed to change to root directory
+  exit /b 1
+)
+
 call :UpdateRepo "openvino" || goto :FAIL
 call :UpdateRepo "openvino.genai" || goto :FAIL
 
@@ -40,5 +49,6 @@ echo.
 echo ==========================================
 echo   Update FAILED. Stopping.
 echo ==========================================
+popd
 endlocal
 exit /b 1

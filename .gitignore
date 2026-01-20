@@ -1,0 +1,28 @@
+# Cloned repositories
+openvino/
+openvino.genai/
+
+# Build directories
+build/
+build-*/
+**/build/
+**/build-*/
+
+# Python virtual environment
+build-env/
+venv/
+.venv/
+
+# Archives
+*.zip
+*.tar.gz
+
+# IDE
+.vs/
+.vscode/
+*.suo
+*.user
+
+# OS
+Thumbs.db
+.DS_Store

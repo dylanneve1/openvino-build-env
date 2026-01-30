@@ -148,6 +148,8 @@ cmake -G Ninja \
   -DCMAKE_INSTALL_PREFIX="$OV_INSTALL" \
   -DENABLE_PLUGINS_XML=ON \
   -DENABLE_DEBUG_CAPS=ON \
+  -DENABLE_INTEL_NPU_PROTOPIPE=OFF \
+  -DNPU_PLUGIN_DEVELOPER_BUILD=ON \
   ..
 
 cmake --build . --target install --parallel "$PARALLEL_JOBS"

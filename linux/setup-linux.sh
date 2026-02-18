@@ -143,20 +143,16 @@ command -v g++ >/dev/null 2>&1 && echo "✓ g++: $(g++ --version | head -n1)" ||
 command -v python3 >/dev/null 2>&1 && echo "✓ python3: $(python3 --version)" || echo "✗ python3 not found"
 command -v ccache >/dev/null 2>&1 && echo "✓ ccache: $(ccache --version | head -n1)" || echo "  ccache not found (optional)"
 
-# Clone repositories
+# Initialize submodules
 echo ""
 echo "=========================================="
-echo "  Step 2/4: Cloning repositories"
+echo "  Step 2/4: Initializing submodules"
 echo "=========================================="
 echo ""
 
 cd "$ROOT"
 
-if [ -d "openvino" ] && [ -d "openvino.genai" ]; then
-    echo "Repositories already exist, skipping clone..."
-else
-    "$SCRIPT_DIR/clone-all.sh"
-fi
+git submodule update --init --recursive
 
 # Install OpenVINO-specific dependencies
 echo ""

@@ -4,6 +4,16 @@ Cross-platform build scripts for OpenVINO and OpenVINO GenAI using Ninja.
 
 Supports both **Windows** and **Linux**.
 
+## Submodules
+
+This repository uses git submodules for all dependencies:
+
+| Submodule | Description |
+|-----------|-------------|
+| `openvino/` | OpenVINO toolkit source |
+| `openvino.genai/` | OpenVINO GenAI source |
+| `npuw.model_generator.demo/` | NPUW synthetic model generator and test suite |
+
 ## Quick Start
 
 ### Linux - Complete Automated Setup
@@ -11,15 +21,13 @@ Supports both **Windows** and **Linux**.
 On a vanilla Linux installation, just run:
 
 ```bash
-# Run automated setup (does everything!)
+# Clone with submodules
+git clone --recursive <repo-url>
+cd ov-build-tools
+
+# Run automated setup (installs dependencies, initializes submodules)
 ./linux/setup-linux.sh
 ```
-
-This single command will:
-1. Install all build dependencies (cmake, ninja, gcc, python, etc.)
-2. Clone OpenVINO and OpenVINO GenAI repositories
-3. Install OpenVINO-specific dependencies
-4. Prepare your system for building
 
 Then build:
 ```bash
@@ -31,8 +39,9 @@ Then build:
 On Windows, ensure you have Visual Studio installed, then:
 
 ```batch
-REM Clone repositories
-windows\clone-all.bat
+REM Clone with submodules
+git clone --recursive <repo-url>
+cd ov-build-tools
 
 REM Build
 windows\ninja-build.bat
@@ -40,43 +49,15 @@ windows\ninja-build.bat
 
 ## Manual Steps (Advanced Users)
 
-### 1. Clone Repositories
+### 1. Initialize Submodules
 
-**Windows:**
-```batch
-windows\clone-all.bat
-```
+After cloning, initialize all submodules:
 
-**Linux:**
 ```bash
-./linux/clone-all.sh
-```
-
-Or clone individually:
-
-**Windows:**
-```batch
-windows\clone-openvino.bat
-windows\clone-openvino-genai.bat
-```
-
-**Linux:**
-```bash
-./linux/clone-openvino.sh
-./linux/clone-openvino-genai.sh
+git submodule update --init --recursive
 ```
 
 ### 2. Build
-
-**Windows:**
-```batch
-windows\ninja-build.bat
-```
-
-Build with custom tag for packaging:
-```batch
-windows\ninja-build.bat -Tag my-custom-tag
-```
 
 **Linux:**
 ```bash
@@ -86,6 +67,16 @@ windows\ninja-build.bat -Tag my-custom-tag
 Build with specific number of parallel jobs:
 ```bash
 ./linux/ninja-build.sh --jobs 8
+```
+
+**Windows:**
+```batch
+windows\ninja-build.bat
+```
+
+Build with custom tag for packaging:
+```batch
+windows\ninja-build.bat -Tag my-custom-tag
 ```
 
 **Cross-compile for Windows on Linux:**
@@ -99,44 +90,36 @@ sudo apt-get install mingw-w64
 
 ### 3. Update
 
-Pull latest changes from both repositories:
-
-**Windows:**
-```batch
-windows\update-all.bat
-```
+Pull latest submodule changes:
 
 **Linux:**
 ```bash
 ./linux/update-all.sh
 ```
 
-## Scripts Overview
+**Windows:**
+```batch
+windows\update-all.bat
+```
 
-Scripts are organized by platform in separate folders:
+## Scripts Overview
 
 ### Linux Scripts (`linux/`)
 
 | Script | Description |
 |--------|-------------|
-| `setup-linux.sh` | **ONE-COMMAND SETUP**: Installs dependencies, clones repos, prepares everything |
-| `clone-all.sh` | Clone both OpenVINO and OpenVINO GenAI repositories |
-| `clone-openvino.sh` | Clone OpenVINO repository only |
-| `clone-openvino-genai.sh` | Clone OpenVINO GenAI repository only |
+| `setup-linux.sh` | **ONE-COMMAND SETUP**: Installs dependencies, initializes submodules, prepares everything |
 | `ninja-build.sh` | Build OpenVINO + GenAI for Linux and create tar.gz package |
 | `ninja-build-windows.sh` | **Cross-compile** for Windows on Linux (using MinGW-w64) |
-| `update-all.sh` | Update both repositories (git pull) |
+| `update-all.sh` | Update all submodules |
 
 ### Windows Scripts (`windows/`)
 
 | Script | Description |
 |--------|-------------|
-| `clone-all.bat` | Clone both OpenVINO and OpenVINO GenAI repositories |
-| `clone-openvino.bat` | Clone OpenVINO repository only |
-| `clone-openvino-genai.bat` | Clone OpenVINO GenAI repository only |
 | `ninja-build.bat` | Build OpenVINO + GenAI using Ninja and create ZIP package |
 | `ninja-pack.ps1` | PowerShell script for packaging builds |
-| `update-all.bat` | Update both repositories (git pull) |
+| `update-all.bat` | Update all submodules |
 
 ## Requirements
 
@@ -161,53 +144,20 @@ Scripts are organized by platform in separate folders:
 ./linux/setup-linux.sh
 ```
 
-This script automatically:
-- Detects your Linux distribution
-- Installs all required dependencies
-- Clones both repositories
-- Runs OpenVINO's `install_build_dependencies.sh`
-- Prepares everything for building
-
-**Supported distributions:**
-- Ubuntu/Debian
-- Fedora/RHEL/CentOS/Rocky/AlmaLinux
-- openSUSE/SLES
-- Arch/Manjaro
-
 ## Directory Structure
 
 ```
 ov-build-tools/
-├── linux/                 # Linux build scripts (.sh)
-│   ├── setup-linux.sh     # Automated setup (ONE COMMAND!)
-│   ├── clone-all.sh
-│   ├── clone-openvino.sh
-│   ├── clone-openvino-genai.sh
+├── linux/                        # Linux build scripts (.sh)
+│   ├── setup-linux.sh            # Automated setup (ONE COMMAND!)
 │   ├── ninja-build.sh
+│   ├── ninja-build-windows.sh
 │   └── update-all.sh
-├── windows/               # Windows build scripts (.bat, .ps1)
-│   ├── clone-all.bat
-│   ├── clone-openvino.bat
-│   ├── clone-openvino-genai.bat
+├── windows/                      # Windows build scripts (.bat, .ps1)
 │   ├── ninja-build.bat
 │   ├── ninja-pack.ps1
 │   └── update-all.bat
-├── openvino/              # OpenVINO source (after cloning)
-└── openvino.genai/        # OpenVINO GenAI source (after cloning)
+├── openvino/                     # [submodule] OpenVINO source
+├── openvino.genai/               # [submodule] OpenVINO GenAI source
+└── npuw.model_generator.demo/    # [submodule] NPUW model generator + test suite
 ```
-
-## Platform-Specific Notes
-
-### Windows
-- Uses Visual Studio compiler (vcvars64.bat)
-- Supports ccache for faster rebuilds (configure path in ninja-build.bat)
-- **Cross-compilation**: Can build Windows binaries using MinGW-w64 (`ninja-build-windows.sh`)
-- Packages builds as ZIP archives
-- Optional: Python virtual environment at `build-env\Scripts\activate.bat`
-
-### Linux
-- Uses GCC compiler
-- Packages builds as tar.gz archives
-- Optional: Python virtual environment at `build-env/bin/activate`
-- **Automated setup available**: Run `./linux/setup-linux.sh` for complete one-command setup
-- Supports Ubuntu, Debian, Fedora, RHEL, CentOS, Rocky, AlmaLinux, openSUSE, SLES, Arch, and Manjaro

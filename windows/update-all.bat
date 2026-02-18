@@ -1,6 +1,10 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+REM ============================================================
+REM Update all submodules (OpenVINO, GenAI, model generator demo)
+REM ============================================================
+
 REM --- Root directory (parent of windows folder) ---
 set "ROOT=%~dp0.."
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
@@ -10,45 +14,28 @@ pushd "%ROOT%" || (
   exit /b 1
 )
 
-call :UpdateRepo "openvino" || goto :FAIL
-call :UpdateRepo "openvino.genai" || goto :FAIL
-
 echo.
 echo ==========================================
-echo   All updates completed OK  ^✓
+echo   Updating all submodules
 echo ==========================================
-endlocal
-exit /b 0
+echo.
 
-:UpdateRepo
-set "REPO=%~1"
-if not exist "%REPO%\" (
+git submodule update --init --recursive
+if %errorlevel% neq 0 (
   echo.
   echo ==========================================
-  echo   ERROR: Missing folder "%REPO%"
+  echo   Update FAILED.
   echo ==========================================
+  popd
+  endlocal
   exit /b 1
 )
 
 echo.
 echo ==========================================
-echo   Updating: %REPO%
+echo   All submodules updated  OK
 echo ==========================================
 
-pushd "%REPO%" || exit /b 1
-
-echo git pull
-git pull || (popd & exit /b 1)
-
-popd
-echo Done: %REPO%
-exit /b 0
-
-:FAIL
-echo.
-echo ==========================================
-echo   Update FAILED. Stopping.
-echo ==========================================
 popd
 endlocal
-exit /b 1
+exit /b 0

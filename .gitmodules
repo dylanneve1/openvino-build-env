@@ -1,0 +1,9 @@
+[submodule "npuw.model_generator.demo"]
+	path = npuw.model_generator.demo
+	url = https://github.com/dylanneve1/npuw.model_generator.demo.git
+[submodule "openvino.genai"]
+	path = openvino.genai
+	url = https://github.com/openvinotoolkit/openvino.genai.git
+[submodule "openvino"]
+	path = openvino
+	url = https://github.com/openvinotoolkit/openvino.git

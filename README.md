@@ -22,8 +22,8 @@ On a vanilla Linux installation, just run:
 
 ```bash
 # Clone with submodules
-git clone --recursive <repo-url>
-cd ov-build-tools
+git clone --recursive https://github.com/dylanneve1/openvino-build-env.git
+cd openvino-build-env
 
 # Run automated setup (installs dependencies, initializes submodules)
 ./linux/setup-linux.sh
@@ -40,8 +40,8 @@ On Windows, ensure you have Visual Studio installed, then:
 
 ```batch
 REM Clone with submodules
-git clone --recursive <repo-url>
-cd ov-build-tools
+git clone --recursive https://github.com/dylanneve1/openvino-build-env.git
+cd openvino-build-env
 
 REM Build
 windows\ninja-build.bat

@@ -104,11 +104,7 @@ if [ ! -f "$OV_SRC/.deps_installed" ]; then
     echo "  touch .deps_installed"
     echo "  cd -"
     echo ""
-    read -p "Continue anyway? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
+    echo "Continuing anyway..."
 fi
 
 echo ""
@@ -150,6 +146,9 @@ cmake -G Ninja \
   -DENABLE_DEBUG_CAPS=ON \
   -DENABLE_INTEL_NPU_PROTOPIPE=OFF \
   -DNPU_PLUGIN_DEVELOPER_BUILD=ON \
+  -DENABLE_PYTHON_API=ON \
+  -DENABLE_WHEEL=ON \
+  -DENABLE_TESTS=ON \
   ..
 
 cmake --build . --target install --parallel "$PARALLEL_JOBS"

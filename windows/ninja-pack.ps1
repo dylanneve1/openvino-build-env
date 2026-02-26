@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 Write-Host "Finding out..."
 
 $ScriptRoot = $PSScriptRoot
-$RepoRoot = Join-Path $ScriptRoot "openvino"
+$RepoRoot = Join-Path $ScriptRoot "..\openvino"
 
 if (-not (Test-Path (Join-Path $RepoRoot "CMakeLists.txt"))) {
     throw "OpenVINO repo not found at expected path: $RepoRoot"

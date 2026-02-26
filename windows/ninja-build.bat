@@ -124,6 +124,7 @@ cmake -G Ninja ^
   -DNPU_PLUGIN_DEVELOPER_BUILD=ON ^
   -DCMAKE_C_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
   -DCMAKE_CXX_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
+  -DENABLE_SAMPLES=OFF ^
   .. || (popd && exit /b 1)
 
 cmake --build . --target install --parallel 8 || (popd && exit /b 1)

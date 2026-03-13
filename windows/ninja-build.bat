@@ -45,6 +45,10 @@ REM --- OpenVINO Developer Package directory ---
 REM Consumers should point OpenVINODeveloperPackage_DIR to the OpenVINO BUILD tree
 set "OV_DEVPKG_DIR=%OV_BUILD%"
 
+REM --- Python 3.11 (required for OpenVINO build) ---
+set "PYTHON3=C:\Users\dneve\AppData\Local\Programs\Python\Python311\python.exe"
+set "PYTHON3_DIR=C:\Users\dneve\AppData\Local\Programs\Python\Python311"
+
 REM --- ccache launcher (adjust if needed) ---
 set "CCACHE_EXE=C:\Users\dneve\ccache\ccache.exe"
 
@@ -97,14 +101,26 @@ echo 1^) Initializing Visual Studio x64 environment...
 echo ============================================================
 call "%VCVARS64%" || exit /b 1
 
-REM --- Optional python venv activation ---
-if exist "%ROOT%\build-env\Scripts\activate.bat" (
+REM --- Python venv setup ---
+if not exist "%ROOT%\build-env\Scripts\activate.bat" (
   echo.
   echo ============================================================
-  echo 2^) Activating Python venv...
+  echo 2a^) Creating Python 3.11 venv...
   echo ============================================================
-  call "%ROOT%\build-env\Scripts\activate.bat"
+  if not exist "%PYTHON3%" (
+    echo ERROR: Python 3.11 not found at %PYTHON3%
+    exit /b 1
+  )
+  "%PYTHON3%" -m venv "%ROOT%\build-env" || exit /b 1
+  "%ROOT%\build-env\Scripts\python.exe" -m pip install --upgrade pip ninja -q || exit /b 1
 )
+
+echo.
+echo ============================================================
+echo 2^) Activating Python 3.11 venv...
+echo ============================================================
+call "%ROOT%\build-env\Scripts\activate.bat"
+python --version
 
 echo.
 echo ============================================================
@@ -117,17 +133,23 @@ pushd "%OV_BUILD%" || exit /b 1
 cmake -G Ninja ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%OV_INSTALL%" ^
+  -DPython3_EXECUTABLE="%ROOT%\build-env\Scripts\python.exe" ^
+  -DPython3_ROOT_DIR="%PYTHON3_DIR%" ^
+  -DPython3_FIND_REGISTRY=NEVER ^
   -DENABLE_PLUGINS_XML=ON ^
   -DENABLE_DEBUG_CAPS=ON ^
   -DENABLE_NPU_DEBUG_CAPS=ON ^
+  -DENABLE_SAMPLES=OFF ^
   -DENABLE_INTEL_NPU_PROTOPIPE=OFF ^
   -DNPU_PLUGIN_DEVELOPER_BUILD=ON ^
   -DCMAKE_C_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
   -DCMAKE_CXX_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
-  -DENABLE_SAMPLES=OFF ^
+  -DCMAKE_C_FLAGS="/MP" ^
+  -DCMAKE_CXX_FLAGS="/MP" ^
+  -DCMAKE_LINKER="C:\Program Files\LLVM\bin\lld-link.exe" ^
   .. || (popd && exit /b 1)
 
-cmake --build . --target install --parallel 8 || (popd && exit /b 1)
+cmake --build . --target install || (popd && exit /b 1)
 
 popd
 
@@ -143,11 +165,17 @@ cmake -G Ninja ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%OV_INSTALL%" ^
   -DOpenVINODeveloperPackage_DIR="%OV_DEVPKG_DIR%" ^
+  -DPython3_EXECUTABLE="%ROOT%\build-env\Scripts\python.exe" ^
+  -DPython3_ROOT_DIR="%PYTHON3_DIR%" ^
+  -DPython3_FIND_REGISTRY=NEVER ^
   -DCMAKE_C_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
   -DCMAKE_CXX_COMPILER_LAUNCHER="%CCACHE_EXE%" ^
+  -DCMAKE_C_FLAGS="/MP" ^
+  -DCMAKE_CXX_FLAGS="/MP" ^
+  -DCMAKE_LINKER="C:\Program Files\LLVM\bin\lld-link.exe" ^
   .. || (popd && exit /b 1)
 
-cmake --build . --target install --parallel 8 || (popd && exit /b 1)
+cmake --build . --target install || (popd && exit /b 1)
 
 popd
 
